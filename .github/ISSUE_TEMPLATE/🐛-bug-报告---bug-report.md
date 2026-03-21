@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41B Bug 报告 / Bug Report"
-about: Create a report to help us improve
+about: 报告一个问题帮助我们改进 / Report a bug to help us improve
 title: "\U0001F41B Bug 报告 / Bug Report (问题 / Problems:)"
 labels: ''
 assignees: ''
