@@ -77,8 +77,6 @@
 
 ⬜音效反馈
 
-
-
 **图例**：⬜ 未开始 | 🟡 进行中 | ✅ 已完成
 
 ---
@@ -91,8 +89,39 @@
 | CSS3             | 样式与动画   |
 | JavaScript (ES6) | 交互逻辑    |
 | Web Audio API    | 麦克风音量检测 |
-| localStorage     | 数据持久化   |
 
 ---
 
 ## 📁 项目结构（规划）
+
+class-reading-tree/
+├── index.html          # 首页导航
+├── read-mode.html      # 朗读模式（核心功能）
+├── quiet-mode.html     # 安静模式
+├── css/
+│   └── style.css       # 公共样式
+├── js/
+│   ├── microphone.js   # 麦克风检测模块
+│   ├── tree.js         # 种树逻辑模块
+│   ├── student.js      # 学生管理模块
+│   └── ranking.js      # 排行榜模块
+└── data/
+    └── defaultStudents.txt  # 默认学生数据
+
+---
+
+## 🤝 参与贡献
+
+欢迎贡献代码、报告 Bug 或提出新功能建议！
+
+请先阅读 [贡献指南](https://contributing.md/) 了解详细流程。
+
+---
+
+## 📄 开源协议
+
+本项目采用 **MIT 协议**，你可以自由使用、修改、分发。
+
+---
+
+**🌟 如果这个项目对你有帮助，欢迎点个 Star！**
