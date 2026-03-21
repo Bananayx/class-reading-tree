@@ -95,16 +95,27 @@
 ## 📁 项目结构（规划）
 
 class-reading-tree/
+
 ├── index.html          # 首页导航
+
 ├── read-mode.html      # 朗读模式（核心功能）
+
 ├── quiet-mode.html     # 安静模式
+
 ├── css/
+
 │   └── style.css       # 公共样式
+
 ├── js/
+
 │   ├── microphone.js   # 麦克风检测模块
+
 │   ├── tree.js         # 种树逻辑模块
+
 │   ├── student.js      # 学生管理模块
+
 │   └── ranking.js      # 排行榜模块
+
 └── data/
     └── defaultStudents.txt  # 默认学生数据
 
