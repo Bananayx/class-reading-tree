@@ -67,7 +67,7 @@
 
 ⬜设置面板（可调阈值、倒计时时长）
 
-⬜数据导出/导入（JSON 备份）
+⬜数据导出/导入（TXT 备份）
 
 ⬜操作动画反馈（生长、合成、删除）
 
@@ -88,7 +88,6 @@
 | HTML5            | 页面结构    |
 | CSS3             | 样式与动画   |
 | JavaScript (ES6) | 交互逻辑    |
-| Web Audio API    | 麦克风音量检测 |
 
 ---
 
@@ -102,9 +101,15 @@ class-reading-tree/
 
 ├── quiet-mode.html     # 安静模式
 
-├── css/
+├── style/
 
-│   └── style.css       # 公共样式
+│   └── public.css       # 公共样式
+
+│   └── read.css       # 公共样式
+
+│   └── quiet.css       # 公共样式
+
+│   └── icon.png       # 网页图标
 
 ├── js/
 
@@ -125,7 +130,7 @@ class-reading-tree/
 
 欢迎贡献代码、报告 Bug 或提出新功能建议！
 
-请先阅读 [贡献指南](https://contributing.md/) 了解详细流程。
+请先阅读 [贡献指南](contributing.md) 了解详细流程。
 
 ---
 

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>首页-班级朗读养树系统</title>
+        <link rel="icon" type="image/x-icon" href="style/icon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="style/icon.png">
+        <link rel="stylesheet" type="text/css" href="style/public.css">
+        <link rel="stylesheet" type="text/css" href="style/develop.css">
+    </head>
+    <body class="home-body">
+        <header class="home-header">
+            <div class="home-header-logo">
+                <img src="style/icon.png" alt="logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="read-mode.html">进入朗读养小树</a></li>
+                    <li><a href="quiet-mode.html">进入自习养小树</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div class="home-main">
+                <div class="home-main-title">
+                    <h1>班级朗读养树系统</h1>
+                </div>
+                <div class="home-main-section">
+                    <h2>项目目标</h2>
+                    <h3>核心目标</h3>
+                    <p>开发一款<strong>纯前端、开箱即用</strong>的课堂激励工具，教师无需配置服务器，只需打开浏览器即可使用。</p>
+                    <h3>用户场景</h3>
+                    <ul>
+                        <li>教师打开网页，允许麦克风权限</li>
+                        <li>学生进行朗读挑战（音量需超过设定阈值）</li>
+                        <li>挑战成功 → 生长树苗 → 2棵苗合成1棵树</li>
+                        <li>班级小树数量实时排名，形成正向激励</li>
+                    </ul>
+                    <h3>预期效果</h3>
+                    <ul>
+                        <li>提升学生朗读积极性</li>
+                        <li>可视化班级朗读成果</li>
+                        <li>为教师提供简单的课堂管理工具</li>
+                    </ul>
+                </div>
+                <div class="home-main-section">
+                    <h2>功能规划</h2>
+                    <h3>Phase 1：核心机制（朗读挑战）</h3>
+                    <ul>
+                        <li>⬜ 麦克风权限请求与音量实时检测</li>
+                        <li>⬜ 音量阈值设置（默认 50 分贝）</li>
+                        <li>⬜ 倒计时机制（默认 60 秒）</li>
+                        <li>⬜ 挑战成功 → 生长树苗（🌱）</li>
+                        <li>⬜ 2棵幼苗 → 合成1棵大树（🌳）</li>
+                        <li>⬜ 挑战失败提示（音量不足时倒计时暂停）</li>
+                    </ul>
+                    <h3>Phase 2：班级管理系统</h3>
+                    <ul>
+                        <li>⬜ 学生名单管理（导入自定义名单）</li>
+                        <li>⬜ 小组划分（支持自定义小组数量）</li>
+                        <li>⬜ 为每位学生记录小树数量</li>
+                        <li>⬜ 手动调整小树数量（+1 / -1）</li>
+                    </ul>
+                    <h3>Phase 3：激励体系</h3>
+                    <ul>
+                        <li>⬜ 个人排行榜（按小树数量排序）</li>
+                        <li>⬜ 小组排行榜（按人均小树排序）</li>
+                        <li>⬜ 全班人均小树统计</li>
+                        <li>⬜ 小树数量达到阈值时背景色由沙漠黄变为森林绿</li>
+                    </ul>
+                    <h3>Phase 4：体验优化</h3>
+                    <ul>
+                        <li>⬜ 响应式布局（支持平板、手机）</li>
+                        <li>⬜ 设置面板（可调阈值、倒计时时长）</li>
+                        <li>⬜ 数据导出/导入（TXT 备份）</li>
+                        <li>⬜ 操作动画反馈（生长、合成、删除）</li>
+                    </ul>
+                    <h3>Phase 5：扩展功能</h3>
+                    <ul>
+                        <li>⬜ 自习养树（音量低于阈值才可生长）</li>
+                        <li>⬜ 音效反馈</li>
+                    </ul>
+                    <p><strong>图例</strong>：⬜ 未开始 | 🟡 进行中 | ✅ 已完成</p>
+                </div>
+                <div class="home-main-section">
+                    <h2>技术栈</h2>
+                    <table class="table">
+                        <tr>
+                            <th>技术</th>
+                            <th>用途</th>
+                        </tr>
+                        <tr>
+                            <td>HTML5</td>
+                            <td>页面结构</td>
+                        </tr>
+                        <tr>
+                            <td>CSS3</td>
+                            <td>样式与动画</td>
+                        </tr>
+                        <tr>
+                            <td>JavaScript (ES6)</td>
+                            <td>交互逻辑</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="home-main-section">
+                    <h2>项目结构（规划）</h2>
+                    <pre>
+s-reading-tree/
+index.html          # 首页导航
+read-mode.html      # 朗读模式（核心功能）
+quiet-mode.html     # 安静模式
+style/
+└── style.css       # 公共样式
+└── icon.png       # 网页图标
+js/
+├── microphone.js   # 麦克风检测模块
+├── tree.js         # 种树逻辑模块
+├── student.js      # 学生管理模块
+└── ranking.js      # 排行榜模块
+data/
+└── defaultStudents.txt  # 默认学生数据
+                    </pre>
+                </div>
+                <div class="home-main-section">
+                    <h2>参与贡献</h2>
+                    <p>欢迎贡献代码、报告 Bug 或提出新功能建议！</p>
+                    <p>请前往<a href="https://github.com/Bananayx/class-reading-tree">GitHub页面</a>了解详细流程。</p>
+                </div>
+                <div class="home-main-section">
+                    <h2>开源协议</h2>
+                    <p>本项目采用 <strong>MIT 协议</strong>，你可以自由使用、修改、分发。</p>
+                </div>
+                <div class="home-main-section">
+                    <p><strong>🌟 如果这个项目对你有帮助，欢迎点个 Star！</strong></p>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
