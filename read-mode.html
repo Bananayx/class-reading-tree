@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朗读模式 - 班级朗读养树系统</title>
+    <link rel="icon" type="image/x-icon" href="style/icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="style/icon.png">
+    <link rel="stylesheet" type="text/css" href="style/public.css">
+    <link rel="stylesheet" type="text/css" href="style/read.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <img src="style/icon.png" alt="logo">
+            <h1>朗读模式</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="read-mode.html" class="active">朗读模式</a></li>
+                <li><a href="quiet-mode.html">自习模式</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="control-panel">
+            <div class="control-section">
+                <h2>控制台</h2>
+                <div class="control-buttons">
+                    <button id="startBtn" class="btn btn-primary">开始检测</button>
+                    <button id="importBtn" class="btn btn-secondary">导入名单</button>
+                    <button id="exportBtn" class="btn btn-secondary">导出数据</button>
+                </div>
+                <div class="settings">
+                    <label>
+                        音量阈值：<input type="number" id="thresholdInput" value="50" min="0" max="100"> 分贝
+                    </label>
+                    <label>
+                        倒计时：<input type="number" id="timerInput" value="60" min="1" max="300"> 秒
+                    </label>
+                </div>
+            </div>
+            <div class="control-section">
+                <h2>音量检测</h2>
+                <div class="volume-display">
+                    <div class="volume-bar">
+                        <div id="volumeLevel" class="volume-level"></div>
+                    </div>
+                    <div id="volumeValue">0</div>
+                </div>
+                <div class="timer-display">
+                    <div id="timer">60</div>
+                </div>
+                <div class="status-display">
+                    <div id="status">等待开始...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="forest-panel">
+            <h2>班级森林</h2>
+            <div id="forestDisplay" class="forest-display"></div>
+            <div class="forest-stats">
+                <span>总树木：<span id="totalTrees">0</span> 🌳</span>
+            </div>
+        </div>
+
+        <div class="student-list-panel">
+            <h2>学生列表</h2>
+            <div id="studentList" class="student-list"></div>
+        </div>
+
+        <div class="ranking-panel">
+            <div class="ranking-section">
+                <h2>个人排行榜</h2>
+                <div id="personalRanking" class="ranking-list"></div>
+            </div>
+            <div class="ranking-section">
+                <h2>小组排行榜</h2>
+                <div id="groupRanking" class="ranking-list"></div>
+            </div>
+        </div>
+
+        <div class="danger-zone">
+            <button id="resetBtn" class="btn btn-danger">⚠️ 重置所有数据</button>
+        </div>
+    </main>
+
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>导入学生名单</h2>
+            <p>格式：xx 组：张三，李四，王五</p>
+            <textarea id="importText" placeholder="第一组：张三，李四，王五&#10;第二组：赵六，钱七，刘八"></textarea>
+            <button id="confirmImport" class="btn btn-primary">确认导入</button>
+        </div>
+    </div>
+
+    <script src="js/microphone.js"></script>
+    <script src="js/student.js"></script>
+    <script src="js/tree.js"></script>
+    <script src="js/ranking.js"></script>
+    <script>
+        let audioContext, analyser, microphone, dataArray;
+        let isRunning = false;
+        let timerInterval;
+        let countdown;
+
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const importBtn = document.getElementById('importBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const thresholdInput = document.getElementById('thresholdInput');
+        const timerInput = document.getElementById('timerInput');
+        const volumeLevel = document.getElementById('volumeLevel');
+        const volumeValue = document.getElementById('volumeValue');
+        const timerDisplay = document.getElementById('timer');
+        const statusDisplay = document.getElementById('status');
+        const studentListEl = document.getElementById('studentList');
+        const personalRankingEl = document.getElementById('personalRanking');
+        const groupRankingEl = document.getElementById('groupRanking');
+        const forestDisplayEl = document.getElementById('forestDisplay');
+        const totalTreesEl = document.getElementById('totalTrees');
+        const importModal = document.getElementById('importModal');
+        const importText = document.getElementById('importText');
+        const confirmImport = document.getElementById('confirmImport');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        let students = StudentManager.loadStudents();
+        let currentStudentIndex = 0;
+        let classForestTrees = 0;
+
+        function init() {
+            resetTreesToZero();
+            loadClassForestTrees();
+            loadSettings();
+            renderStudentList();
+            renderForest();
+            updateRankings();
+        }
+
+        function loadSettings() {
+            const threshold = localStorage.getItem('readThreshold');
+            const timer = localStorage.getItem('readTimer');
+            
+            if (threshold) {
+                thresholdInput.value = threshold;
+            }
+            if (timer) {
+                timerInput.value = timer;
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('readThreshold', thresholdInput.value);
+            localStorage.setItem('readTimer', timerInput.value);
+        }
+
+        function loadClassForestTrees() {
+            const stored = localStorage.getItem('classForestTrees');
+            if (stored) {
+                classForestTrees = parseInt(stored);
+            }
+        }
+
+        function saveClassForestTrees() {
+            localStorage.setItem('classForestTrees', classForestTrees.toString());
+        }
+
+        function resetTreesToZero() {
+            students.forEach(student => {
+                student.trees = 0;
+            });
+            StudentManager.saveStudents(students);
+            classForestTrees = 0;
+            saveClassForestTrees();
+        }
+
+        function renderForest() {
+            totalTreesEl.textContent = classForestTrees;
+            
+            if (classForestTrees === 0) {
+                forestDisplayEl.innerHTML = '<div class="no-trees">还没有树，开始种树吧！</div>';
+                return;
+            }
+            
+            const currentTreeCount = forestDisplayEl.querySelectorAll('.forest-tree').length;
+            
+            if (classForestTrees > currentTreeCount) {
+                const noTreesEl = forestDisplayEl.querySelector('.no-trees');
+                if (noTreesEl) {
+                    forestDisplayEl.innerHTML = '';
+                }
+                
+                const treesToAdd = classForestTrees - currentTreeCount;
+                for (let i = 0; i < treesToAdd; i++) {
+                    const tree = document.createElement('div');
+                    tree.className = 'forest-tree forest-tree-new';
+                    tree.textContent = '🌳';
+                    forestDisplayEl.appendChild(tree);
+                    
+                    setTimeout(() => {
+                        tree.classList.remove('forest-tree-new');
+                    }, 500);
+                }
+            } else if (classForestTrees < currentTreeCount) {
+                const treesToRemove = currentTreeCount - classForestTrees;
+                for (let i = 0; i < treesToRemove; i++) {
+                    if (forestDisplayEl.lastChild && forestDisplayEl.lastChild.classList.contains('forest-tree')) {
+                        forestDisplayEl.removeChild(forestDisplayEl.lastChild);
+                    }
+                }
+            }
+        }
+
+        function renderMiniForest(container, treeCount) {
+            container.innerHTML = '';
+            
+            if (treeCount === 0) {
+                container.innerHTML = '<div class="no-mini-trees">暂无小树</div>';
+                return;
+            }
+            
+            for (let i = 0; i < treeCount; i++) {
+                const tree = document.createElement('div');
+                tree.className = 'mini-tree';
+                tree.textContent = '🌱';
+                container.appendChild(tree);
+            }
+        }
+
+        function renderStudentList() {
+            studentListEl.innerHTML = '';
+            
+            const groups = {};
+            students.forEach((student, index) => {
+                if (!groups[student.group]) {
+                    groups[student.group] = [];
+                }
+                groups[student.group].push({ ...student, originalIndex: index });
+            });
+            
+            Object.keys(groups).sort().forEach(groupName => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'student-group-column';
+                
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.textContent = groupName;
+                groupDiv.appendChild(groupTitle);
+                
+                const groupStudents = document.createElement('div');
+                groupStudents.className = 'group-students';
+                
+                groups[groupName].forEach(student => {
+                    const div = document.createElement('div');
+                    div.className = 'student-item';
+                    div.innerHTML = `
+                        <div class="student-info">
+                            <span class="student-name">${student.name}</span>
+                        </div>
+                        <div class="student-tree-control">
+                            <button class="btn-tree btn-minus" onclick="adjustTree(${student.originalIndex}, -1)">-</button>
+                            <button class="btn-tree btn-plus" onclick="adjustTree(${student.originalIndex}, 1)">+</button>
+                        </div>
+                        <div class="student-mini-forest" data-student-index="${student.originalIndex}"></div>
+                    `;
+                    groupStudents.appendChild(div);
+                    
+                    const miniForest = div.querySelector('.student-mini-forest');
+                    renderMiniForest(miniForest, student.trees);
+                });
+                
+                groupDiv.appendChild(groupStudents);
+                studentListEl.appendChild(groupDiv);
+            });
+        }
+
+        function adjustTree(index, delta) {
+            StudentManager.adjustTree(index, delta);
+            students = StudentManager.loadStudents();
+            
+            const studentItem = studentListEl.querySelector(`.student-mini-forest[data-student-index="${index}"]`);
+            if (studentItem) {
+                const newTreeCount = students[index].trees;
+                updateMiniForest(studentItem, newTreeCount);
+            }
+            
+            renderForest();
+            updateRankings();
+        }
+
+        function updateMiniForest(container, treeCount, isAdding) {
+            const currentTreeCount = container.querySelectorAll('.mini-tree').length;
+            
+            if (treeCount === 0) {
+                container.innerHTML = '<div class="no-mini-trees">暂无小树</div>';
+                return;
+            }
+            
+            const noTreesEl = container.querySelector('.no-mini-trees');
+            if (noTreesEl) {
+                container.innerHTML = '';
+            }
+            
+            if (treeCount > currentTreeCount) {
+                const treesToAdd = treeCount - currentTreeCount;
+                for (let i = 0; i < treesToAdd; i++) {
+                    const tree = document.createElement('div');
+                    tree.className = 'mini-tree mini-tree-new';
+                    tree.textContent = '🌱';
+                    container.appendChild(tree);
+                    
+                    setTimeout(() => {
+                        tree.classList.remove('mini-tree-new');
+                    }, 400);
+                }
+            } else if (treeCount < currentTreeCount) {
+                const treesToRemove = currentTreeCount - treeCount;
+                for (let i = 0; i < treesToRemove; i++) {
+                    if (container.lastChild && container.lastChild.classList.contains('mini-tree')) {
+                        container.removeChild(container.lastChild);
+                    }
+                }
+            }
+        }
+
+        function updateRankings() {
+            personalRankingEl.innerHTML = RankingManager.getPersonalRanking(students)
+                .map((item, i) => `<div class="ranking-item"><span class="rank">${i+1}</span><span class="name">${item.name}</span><span class="group">${item.group}</span><span class="trees">🌱 ${item.trees}</span></div>`)
+                .join('');
+            
+            groupRankingEl.innerHTML = RankingManager.getGroupRanking(students)
+                .map((item, i) => `<div class="ranking-item"><span class="rank">${i+1}</span><span class="name">${item.group}</span><span class="trees">🌱 ${item.totalTrees}</span><span class="avg">人均 ${item.avgTrees.toFixed(1)}</span></div>`)
+                .join('');
+        }
+
+        async function startDetection() {
+            if (isRunning) {
+                stopDetection();
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                isRunning = true;
+                startBtn.textContent = '停止检测';
+                countdown = parseInt(timerInput.value);
+                timerDisplay.textContent = countdown;
+                
+                detectVolume();
+            } catch (err) {
+                alert('无法访问麦克风，请确保已授予权限！');
+            }
+        }
+
+        function stopDetection() {
+            isRunning = false;
+            startBtn.textContent = '开始检测';
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            countdown = parseInt(timerInput.value);
+            timerDisplay.textContent = countdown;
+            if (audioContext) {
+                audioContext.close();
+            }
+            statusDisplay.textContent = '已停止';
+        }
+
+        function detectVolume() {
+            if (!isRunning) return;
+
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            const average = sum / dataArray.length;
+            const volume = Math.round(average * 100 / 255);
+
+            volumeValue.textContent = volume;
+            volumeLevel.style.width = Math.min(volume, 100) + '%';
+
+            const threshold = parseInt(thresholdInput.value);
+            if (volume >= threshold) {
+                statusDisplay.textContent = '音量达标！';
+                statusDisplay.style.color = 'green';
+                
+                if (!timerInterval) {
+                    timerInterval = setInterval(() => {
+                        countdown--;
+                        timerDisplay.textContent = countdown;
+                        
+                        if (countdown <= 0) {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                            addTreeToClassForest();
+                            countdown = parseInt(timerInput.value);
+                            timerDisplay.textContent = countdown;
+                        }
+                    }, 1000);
+                }
+            } else {
+                statusDisplay.textContent = '音量不足';
+                statusDisplay.style.color = 'red';
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            }
+
+            requestAnimationFrame(detectVolume);
+        }
+
+        function addTreeToClassForest() {
+            classForestTrees += 1;
+            saveClassForestTrees();
+            renderForest();
+            
+            currentStudentIndex = (currentStudentIndex + 1) % students.length;
+            
+            statusDisplay.textContent = `全班获得一棵树！`;
+            setTimeout(() => {
+                statusDisplay.textContent = isRunning ? '检测中...' : '已停止';
+            }, 2000);
+        }
+
+        startBtn.addEventListener('click', startDetection);
+        
+        resetBtn.addEventListener('click', () => {
+            if (confirm('确定要重置所有数据吗？')) {
+                StudentManager.resetStudents();
+                students = StudentManager.loadStudents();
+                renderStudentList();
+                renderForest();
+                updateRankings();
+            }
+        });
+
+        importBtn.addEventListener('click', () => {
+            importModal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            importModal.style.display = 'none';
+        });
+
+        confirmImport.addEventListener('click', () => {
+            const text = importText.value.trim();
+            const newStudents = StudentManager.parseImportText(text);
+            if (newStudents.length > 0) {
+                StudentManager.saveStudents(newStudents);
+                students = newStudents;
+                currentStudentIndex = 0;
+                renderStudentList();
+                renderForest();
+                updateRankings();
+                importModal.style.display = 'none';
+            } else {
+                alert('格式错误，请检查输入！');
+            }
+        });
+
+        exportBtn.addEventListener('click', () => {
+            const groups = {};
+            students.forEach(student => {
+                if (!groups[student.group]) {
+                    groups[student.group] = [];
+                }
+                groups[student.group].push(student.name);
+            });
+            
+            let text = '';
+            Object.keys(groups).sort().forEach(groupName => {
+                text += `${groupName}:${groups[groupName].join(',')}\n`;
+            });
+            
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '学生数据.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === importModal) {
+                importModal.style.display = 'none';
+            }
+        });
+
+        thresholdInput.addEventListener('change', saveSettings);
+        timerInput.addEventListener('change', saveSettings);
+
+        init();
+    </script>
+</body>
+</html>

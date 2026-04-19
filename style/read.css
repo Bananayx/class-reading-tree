@@ -1,0 +1,624 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background-color: #f5fff5;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    z-index: 1000;
+    width: calc(100% - 20px);
+    left: 10px;
+    top: 10px;
+    box-sizing: border-box;
+    height: 60px;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo img {
+    height: 40px;
+    width: auto;
+}
+
+.header-logo h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.header nav ul li {
+    margin: 0 10px;
+}
+
+.header nav ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 20px;
+    background-color: #90EE90;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-size: 1em;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    white-space: nowrap;
+}
+
+.header nav ul li a:hover {
+    background-color: #80d180;
+}
+
+.header nav ul li a.active {
+    background-color: #228B22;
+    font-weight: bold;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 80px auto 0;
+    border-radius: 10px;
+}
+
+.control-panel {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.control-section {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.control-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #228B22;
+    font-size: 1.3em;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: #228B22;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1a6b1a;
+}
+
+.btn-secondary {
+    background-color: #90EE90;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #80d180;
+}
+
+.btn-danger {
+    background-color: #ff4444;
+    color: white;
+    font-size: 1.1em;
+    padding: 12px 30px;
+}
+
+.btn-danger:hover {
+    background-color: #ff0000;
+}
+
+.danger-zone {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    text-align: center;
+    border: 2px solid #ffcccc;
+    box-sizing: border-box;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings input {
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.volume-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.volume-bar {
+    flex: 1;
+    height: 30px;
+    background-color: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.volume-level {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #90EE90, #228B22);
+    transition: width 0.1s;
+}
+
+#volumeValue {
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.timer-display {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#timer {
+    font-size: 3em;
+    font-weight: bold;
+    color: #228B22;
+}
+
+.status-display {
+    text-align: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+#status {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.forest-panel {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.forest-panel h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #228B22;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.student-list-panel h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #228B22;
+    font-size: 1.3em;
+}
+
+.ranking-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #228B22;
+    font-size: 1.3em;
+}
+
+.forest-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    padding: 20px;
+    background-color: #e8f5e9;
+    border-radius: 10px;
+    min-height: 100px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.forest-tree {
+    font-size: 1.5em;
+}
+
+.forest-tree-new {
+    animation: forestTreeGrow 0.5s ease-out;
+}
+
+@keyframes forestTreeGrow {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.no-trees {
+    width: 100%;
+    text-align: center;
+    color: #999;
+    font-size: 1.2em;
+    padding: 40px;
+}
+
+.forest-stats {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 1.1em;
+    color: #666;
+}
+
+.forest-stats span {
+    font-weight: bold;
+    color: #228B22;
+}
+
+.student-list-panel {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.student-list-panel h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #228B22;
+}
+
+.student-list {
+    display: flex;
+    gap: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 10px;
+}
+
+.student-group-column {
+    flex: 0 0 auto;
+    min-width: 250px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+    border: 2px solid #90EE90;
+}
+
+.group-title {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #228B22;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #90EE90;
+    border-radius: 5px;
+}
+
+.group-students {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.student-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #fff;
+    border-radius: 5px;
+    border-left: 4px solid #90EE90;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    gap: 10px;
+}
+
+.student-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.student-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.student-tree-control {
+    display: flex;
+    gap: 5px;
+    flex: 0 0 auto;
+}
+
+.student-mini-forest {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    flex: 1 1 auto;
+    min-height: 20px;
+    align-items: center;
+}
+
+.mini-tree {
+    font-size: 1em;
+}
+
+.mini-tree-new {
+    animation: miniTreePop 0.4s ease-out;
+}
+
+@keyframes miniTreePop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.no-mini-trees {
+    color: #999;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.student-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.student-tree {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tree-count {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.btn-tree {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.btn-minus {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.btn-minus:hover {
+    background-color: #ee5a5a;
+}
+
+.btn-plus {
+    background-color: #51cf66;
+    color: white;
+}
+
+.btn-plus:hover {
+    background-color: #40c057;
+}
+
+.ranking-panel {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.ranking-section {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ranking-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #228B22;
+}
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    gap: 15px;
+}
+
+.ranking-item .rank {
+    width: 30px;
+    height: 30px;
+    background-color: #228B22;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.ranking-item .name {
+    flex: 1;
+    font-weight: bold;
+}
+
+.ranking-item .group {
+    background-color: #90EE90;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.ranking-item .trees {
+    font-weight: bold;
+    color: #228B22;
+}
+
+.ranking-item .avg {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #333;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #228B22;
+}
+
+.modal-content p {
+    color: #666;
+    font-size: 0.9em;
+}
+
+#importText {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+#confirmImport {
+    width: 100%;
+}

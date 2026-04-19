@@ -1,9 +1,11 @@
 .home-body {
     background-color: #f5fff5;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
 }
 .home-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 10px 20px;
     background-color: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
@@ -16,35 +18,59 @@
     left: 10px;
     top: 10px;
     box-sizing: border-box;
-    
+    height: 60px;
 }
+
+.home-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .home-header-logo img {
     height: 40px;
     width: auto;
 }
+
+.home-header-logo h1 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
 .home-header nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
+    align-items: center;
 }
+
 .home-header nav ul li {
-    margin: 0 15px;
+    margin: 0 10px;
 }
+
 .home-header nav ul li a {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #90EE90;
-    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 15px;
+    background-color: transparent;
+    color: #333;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
+    font-size: 1em;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    white-space: nowrap;
 }
+
 .home-header nav ul li a:hover {
-    background-color: #80d180;
+    color: #228B22;
 }
+
 .home-header nav ul li a.active {
-    background-color: #80d180;
+    color: #228B22;
     font-weight: bold;
 }
 .home-main {
@@ -56,6 +82,17 @@
     max-width: 800px;
     margin: 80px auto 0;
     border-radius: 10px;
+}
+
+.home-main-title {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.home-main-title h1 {
+    color: #333;
+    font-size: 2em;
 }
 .home-main-section {
     margin-bottom: 20px;

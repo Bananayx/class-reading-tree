@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自习模式 - 班级朗读养树系统</title>
+    <link rel="icon" type="image/x-icon" href="style/icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="style/icon.png">
+    <link rel="stylesheet" type="text/css" href="style/public.css">
+    <link rel="stylesheet" type="text/css" href="style/quiet.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <img src="style/icon.png" alt="logo">
+            <h1>自习模式</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="read-mode.html">朗读模式</a></li>
+                <li><a href="quiet-mode.html" class="active">自习模式</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="control-panel">
+            <div class="control-section">
+                <h2>控制台</h2>
+                <div class="control-buttons">
+                    <button id="startBtn" class="btn btn-primary">开始检测</button>
+                </div>
+                <div class="settings">
+                    <label>
+                        安静阈值：<input type="number" id="thresholdInput" value="30" min="0" max="100"> 分贝
+                    </label>
+                    <label>
+                        倒计时：<input type="number" id="timerInput" value="60" min="1" max="300"> 秒
+                    </label>
+                </div>
+            </div>
+            <div class="control-section">
+                <h2>音量检测</h2>
+                <div class="volume-display">
+                    <div class="volume-bar">
+                        <div id="volumeLevel" class="volume-level"></div>
+                    </div>
+                    <div id="volumeValue">0</div>
+                </div>
+                <div class="timer-display">
+                    <div id="timer">60</div>
+                </div>
+                <div class="status-display">
+                    <div id="status">等待开始...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiet-info-panel">
+            <h2>自习说明</h2>
+            <p>保持安静，当音量低于设定阈值时开始倒计时</p>
+            <p>倒计时结束后，全班共同获得一棵树 🌳</p>
+            <div class="forest-panel">
+                <h2>班级森林</h2>
+                <div id="forestDisplay" class="forest-display"></div>
+                <div class="forest-stats">
+                    <span>总树木：<span id="totalTrees">0</span> 🌳</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/microphone.js"></script>
+    <script>
+        let audioContext, analyser, microphone, dataArray;
+        let isRunning = false;
+        let timerInterval;
+        let countdown;
+        let classTotalTrees = 0;
+
+        const startBtn = document.getElementById('startBtn');
+        const thresholdInput = document.getElementById('thresholdInput');
+        const timerInput = document.getElementById('timerInput');
+        const volumeLevel = document.getElementById('volumeLevel');
+        const volumeValue = document.getElementById('volumeValue');
+        const timerDisplay = document.getElementById('timer');
+        const statusDisplay = document.getElementById('status');
+        const totalTreesEl = document.getElementById('totalTrees');
+        const forestDisplayEl = document.getElementById('forestDisplay');
+
+        function init() {
+            resetTreesToZero();
+            loadTotalTrees();
+            loadSettings();
+        }
+
+        function loadSettings() {
+            const threshold = localStorage.getItem('quietThreshold');
+            const timer = localStorage.getItem('quietTimer');
+            
+            if (threshold) {
+                thresholdInput.value = threshold;
+            }
+            if (timer) {
+                timerInput.value = timer;
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('quietThreshold', thresholdInput.value);
+            localStorage.setItem('quietTimer', timerInput.value);
+        }
+
+        function resetTreesToZero() {
+            localStorage.setItem('quietTotalTrees', '0');
+        }
+
+        function loadTotalTrees() {
+            const stored = localStorage.getItem('quietTotalTrees');
+            if (stored) {
+                classTotalTrees = parseInt(stored);
+                totalTreesEl.textContent = classTotalTrees;
+                renderForest();
+            }
+        }
+
+        function renderForest() {
+            if (classTotalTrees === 0) {
+                forestDisplayEl.innerHTML = '<div class="no-trees">还没有树，开始种树吧！</div>';
+                return;
+            }
+            
+            const currentTreeCount = forestDisplayEl.querySelectorAll('.forest-tree').length;
+            
+            if (classTotalTrees > currentTreeCount) {
+                const noTreesEl = forestDisplayEl.querySelector('.no-trees');
+                if (noTreesEl) {
+                    forestDisplayEl.innerHTML = '';
+                }
+                
+                const treesToAdd = classTotalTrees - currentTreeCount;
+                for (let i = 0; i < treesToAdd; i++) {
+                    const tree = document.createElement('div');
+                    tree.className = 'forest-tree forest-tree-new';
+                    tree.textContent = '🌳';
+                    forestDisplayEl.appendChild(tree);
+                    
+                    setTimeout(() => {
+                        tree.classList.remove('forest-tree-new');
+                    }, 500);
+                }
+            } else if (classTotalTrees < currentTreeCount) {
+                const treesToRemove = currentTreeCount - classTotalTrees;
+                for (let i = 0; i < treesToRemove; i++) {
+                    if (forestDisplayEl.lastChild && forestDisplayEl.lastChild.classList.contains('forest-tree')) {
+                        forestDisplayEl.removeChild(forestDisplayEl.lastChild);
+                    }
+                }
+            }
+        }
+
+        function saveTotalTrees() {
+            localStorage.setItem('quietTotalTrees', classTotalTrees.toString());
+        }
+
+        async function startDetection() {
+            if (isRunning) {
+                stopDetection();
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                isRunning = true;
+                startBtn.textContent = '停止检测';
+                countdown = parseInt(timerInput.value);
+                timerDisplay.textContent = countdown;
+                
+                detectVolume();
+            } catch (err) {
+                alert('无法访问麦克风，请确保已授予权限！');
+            }
+        }
+
+        function stopDetection() {
+            isRunning = false;
+            startBtn.textContent = '开始检测';
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            countdown = parseInt(timerInput.value);
+            timerDisplay.textContent = countdown;
+            if (audioContext) {
+                audioContext.close();
+            }
+            statusDisplay.textContent = '已停止';
+        }
+
+        function detectVolume() {
+            if (!isRunning) return;
+
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            const average = sum / dataArray.length;
+            const volume = Math.round(average * 100 / 255);
+
+            volumeValue.textContent = volume;
+            volumeLevel.style.width = Math.min(volume, 100) + '%';
+
+            const threshold = parseInt(thresholdInput.value);
+            if (volume <= threshold) {
+                statusDisplay.textContent = '保持安静！';
+                statusDisplay.style.color = 'green';
+                
+                if (!timerInterval) {
+                    timerInterval = setInterval(() => {
+                        countdown--;
+                        timerDisplay.textContent = countdown;
+                        
+                        if (countdown <= 0) {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                            addTree();
+                            countdown = parseInt(timerInput.value);
+                            timerDisplay.textContent = countdown;
+                        }
+                    }, 1000);
+                }
+            } else {
+                statusDisplay.textContent = '太吵了！';
+                statusDisplay.style.color = 'red';
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            }
+
+            requestAnimationFrame(detectVolume);
+        }
+
+        function addTree() {
+            classTotalTrees += 1;
+            totalTreesEl.textContent = classTotalTrees;
+            saveTotalTrees();
+            renderForest();
+            
+            statusDisplay.textContent = '全班获得一棵树！';
+            setTimeout(() => {
+                statusDisplay.textContent = isRunning ? '检测中...' : '已停止';
+            }, 2000);
+        }
+
+        startBtn.addEventListener('click', startDetection);
+
+        thresholdInput.addEventListener('change', saveSettings);
+        timerInput.addEventListener('change', saveSettings);
+
+        init();
+    </script>
+</body>
+</html>

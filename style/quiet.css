@@ -1,0 +1,309 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background-color: #f0f8ff;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    z-index: 1000;
+    width: calc(100% - 20px);
+    left: 10px;
+    top: 10px;
+    box-sizing: border-box;
+    height: 60px;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo img {
+    height: 40px;
+    width: auto;
+}
+
+.header-logo h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.header nav ul li {
+    margin: 0 10px;
+}
+
+.header nav ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 20px;
+    background-color: #87CEEB;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-size: 1em;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    white-space: nowrap;
+}
+
+.header nav ul li a:hover {
+    background-color: #76c0d6;
+}
+
+.header nav ul li a.active {
+    background-color: #1E90FF;
+    font-weight: bold;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 80px auto 0;
+    border-radius: 10px;
+}
+
+.control-panel {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.control-section {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.control-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1E90FF;
+    font-size: 1.3em;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: #1E90FF;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #187bcd;
+}
+
+.btn-secondary {
+    background-color: #87CEEB;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #76c0d6;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settings input {
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.volume-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.volume-bar {
+    flex: 1;
+    height: 30px;
+    background-color: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.volume-level {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #87CEEB, #1E90FF);
+    transition: width 0.1s;
+}
+
+#volumeValue {
+    width: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.timer-display {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#timer {
+    font-size: 3em;
+    font-weight: bold;
+    color: #1E90FF;
+}
+
+.status-display {
+    text-align: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+#status {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.forest-panel {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.forest-panel h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1E90FF;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.forest-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    padding: 20px;
+    background-color: #e3f2fd;
+    border-radius: 10px;
+    min-height: 100px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.forest-tree {
+    font-size: 1.5em;
+}
+
+.forest-tree-new {
+    animation: forestTreeGrow 0.5s ease-out;
+}
+
+@keyframes forestTreeGrow {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.no-trees {
+    width: 100%;
+    text-align: center;
+    color: #999;
+    font-size: 1.2em;
+    padding: 40px;
+}
+
+.forest-stats {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 1.1em;
+    color: #666;
+}
+
+.forest-stats span {
+    font-weight: bold;
+    color: #1E90FF;
+}
+
+.quiet-info-panel {
+    width: 100%;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.quiet-info-panel h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #1E90FF;
+    font-size: 1.3em;
+}
+
+.quiet-info-panel p {
+    font-size: 1.1em;
+    color: #666;
+    margin: 10px 0;
+}
