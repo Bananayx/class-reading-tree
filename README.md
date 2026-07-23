@@ -157,7 +157,7 @@
 
 ~~## 📁 项目结构~~
 
-~~```~~
+```
 ~~class-reading-tree/~~
 ~~├── index.html          # 首页导航~~
 ~~├── read-mode.html      # 朗读模式（核心功能）~~
@@ -174,7 +174,7 @@
 ~~│   └── ranking.js      # 排行榜模块~~
 ~~└── date/~~
     ~~└── defaultStudents.txt  # 默认学生数据~~
-~~```~~
+```
 
 ***
 
