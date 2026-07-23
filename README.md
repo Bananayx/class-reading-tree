@@ -173,9 +173,9 @@ npx http-server -p 8000
 ~~│   ├── student.js      # 学生管理模块~~
 ~~│   └── ranking.js      # 排行榜模块~~
 ~~└── date/~~
-    ~~└── defaultStudents.txt  # 默认学生数据~~
+~~└── defaultStudents.txt  # 默认学生数据~~
 
-***
+---
 
 ~~## 🎨 样式特点~~
 
